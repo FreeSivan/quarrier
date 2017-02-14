@@ -60,6 +60,7 @@ public class CreatorTask implements IMemoryTask {
     }
 
     /**
+     *description: 创建倒排索引函数
      *
      * @param segment segment对象，存储倒排索引
      * @param doc 持有原始文件数据及数据信息的文档对象
@@ -67,12 +68,19 @@ public class CreatorTask implements IMemoryTask {
     private void buildIndex(Segment segment, Document doc) {
         byte[] data = doc.content;
         int count = 0;
+        // 临时的倒排表，treeMap存储key值，方便key值的排序
         Map<Integer, List<Segment.IndexMeta>> tmpMap = new TreeMap<>();
+        // 以4个byte为一组作为一个key值
         for (int i = 0; i < data.length; i+=4) {
+            // 构造key值
             int value = getKey(data, i, i + 3);
+            // 创建倒排索引结构
             Segment.IndexMeta indexMeta = new Segment.IndexMeta();
+            // 保存key值在文档中的偏移量
             indexMeta.offset = count++;
+            // 保存文档的id
             indexMeta.docId = doc.docId;
+            // 将key值及对应的倒排项加入临时倒排表
             if (tmpMap.containsKey(value)) {
                 tmpMap.get(value).add(indexMeta);
             }
@@ -82,13 +90,17 @@ public class CreatorTask implements IMemoryTask {
                 tmpMap.put(value, lst);
             }
         }
+        // 将临时倒排结构写入到segment结构的倒排表中
         for (Map.Entry<Integer, List<Segment.IndexMeta>> entry: tmpMap.entrySet()) {
+            // key值及key值对应的倒排项
             Integer key = entry.getKey();
             List<Segment.IndexMeta> docIdList = entry.getValue();
+            // 创建新的倒排索引，持有key值及倒排项的位置信息
             Segment.Index index = new Segment.Index();
             index.offset = segment.indexData.size();
             index.length = tmpMap.size();
             segment.index.put(key, index);
+            // 倒排项写入segment的倒排项数组中
             for (Segment.IndexMeta indexMeta : docIdList) {
                 segment.indexData.add(indexMeta);
             }
