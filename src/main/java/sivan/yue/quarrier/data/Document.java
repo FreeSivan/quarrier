@@ -16,7 +16,7 @@ public class Document {
     /**
      * 原始文件ID
      */
-    public String orgId;
+    public int orgId;
     /**
      * 二进制文档内容
      */

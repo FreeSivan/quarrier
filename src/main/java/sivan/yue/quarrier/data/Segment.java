@@ -73,7 +73,7 @@ public class Segment {
         /**
          * 原始文档的主要标识
          */
-        public String orgId;
+        public int orgId;
         /**
          * 原始文档在正排表中的偏移量
          */
