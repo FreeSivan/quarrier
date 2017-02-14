@@ -1,6 +1,6 @@
 package sivan.yue.quarrier.schedule;
 
-import sivan.yue.quarrier.build.IMemoryTask;
+import sivan.yue.quarrier.ITask;
 
 import java.util.concurrent.*;
 
@@ -26,7 +26,7 @@ public class ScheduleCenter {
         threadPool = new ThreadPoolExecutor(minSize, maxSize, keepAliveTime, TimeUnit.SECONDS, taskQueue);
     }
 
-    public boolean addTask(IMemoryTask task) {
+    public boolean addTask(ITask task) {
         if (threadPool == null) {
             return false;
         }

@@ -1,7 +1,7 @@
 package sivan.yue.quarrier.build.writer;
 
 import sivan.yue.quarrier.data.Segment;
-import sivan.yue.quarrier.build.IMemoryTask;
+import sivan.yue.quarrier.ITask;
 
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by xiwen.yxw on 2017/2/10.
  */
-public class WriterTask implements IMemoryTask {
+public class WriterTask implements ITask {
 
     private List<Segment> segments = new ArrayList<>();
 

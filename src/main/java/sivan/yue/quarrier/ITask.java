@@ -1,4 +1,4 @@
-package sivan.yue.quarrier.build;
+package sivan.yue.quarrier;
 
 /**
  * description： 任务基类
@@ -11,5 +11,5 @@ package sivan.yue.quarrier.build;
  *
  * Created by xiwen.yxw on 2017/2/10.
  */
-public interface IMemoryTask extends Runnable{
+public interface ITask extends Runnable{
 }

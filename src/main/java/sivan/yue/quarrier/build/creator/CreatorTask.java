@@ -2,7 +2,7 @@ package sivan.yue.quarrier.build.creator;
 
 import sivan.yue.quarrier.build.merger.MergerBunch;
 import sivan.yue.quarrier.data.Document;
-import sivan.yue.quarrier.build.IMemoryTask;
+import sivan.yue.quarrier.ITask;
 import sivan.yue.quarrier.data.Segment;
 
 import java.util.*;
@@ -15,7 +15,7 @@ import java.util.*;
  *
  * Created by xiwen.yxw on 2017/2/10.
  */
-public class CreatorTask implements IMemoryTask {
+public class CreatorTask implements ITask {
 
     private List<Document> docList = new ArrayList<>();
 
