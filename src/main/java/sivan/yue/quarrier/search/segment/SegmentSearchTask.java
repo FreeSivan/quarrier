@@ -1,13 +1,13 @@
-package sivan.yue.quarrier.service.segment;
+package sivan.yue.quarrier.search.segment;
 
 import sivan.yue.quarrier.data.Segment;
-import sivan.yue.quarrier.service.ServiceTask;
+import sivan.yue.quarrier.search.SearchTask;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by xiwen.yxw on 2017/2/15.
  */
-public class SegmentServiceTask extends ServiceTask {
+public class SegmentSearchTask extends SearchTask {
 
     private BlockingQueue<Integer> bq;
 

@@ -1,9 +1,9 @@
-package sivan.yue.quarrier.service;
+package sivan.yue.quarrier.search;
 
 /**
  * Created by xiwen.yxw on 2017/2/15.
  */
-public interface IService<T> {
+public interface ISearch<T> {
     /**
      *
      * @param rawData
@@ -20,7 +20,7 @@ public interface IService<T> {
 
     /**
      *
-     * @param segment
+     * @param subIndex
      */
-    public void addIndexSegment(T segment);
+    public void addSubIndex(T subIndex);
 }

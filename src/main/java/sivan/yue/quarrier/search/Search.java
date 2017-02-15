@@ -1,4 +1,4 @@
-package sivan.yue.quarrier.service;
+package sivan.yue.quarrier.search;
 
 import sivan.yue.quarrier.schedule.ScheduleCenter;
 
@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by xiwen.yxw on 2017/2/15.
  */
-public abstract class Service<T> implements IService<T>{
+public abstract class Search<T> implements ISearch<T> {
 
     protected List<T> segList = new ArrayList<T>();
 
@@ -30,10 +30,10 @@ public abstract class Service<T> implements IService<T>{
     @Override
     public int multiSearch(byte[] rawData) {
         BlockingQueue<Integer> bq = new LinkedBlockingQueue<>();
-        List<ServiceTask> searchTasks = new ArrayList<>();
+        List<SearchTask> searchTasks = new ArrayList<>();
         int count = 0;
         for (T seg : segList) {
-            ServiceTask task = createTask(seg, bq);
+            SearchTask task = createTask(seg, bq);
             searchTasks.add(task);
             ScheduleCenter.INSTANCE.addTask(task);
         }
@@ -44,7 +44,7 @@ public abstract class Service<T> implements IService<T>{
             try {
                 int ret = bq.take();
                 if (ret >= 0) {
-                    for (ServiceTask t : searchTasks) {
+                    for (SearchTask t : searchTasks) {
                         t.overFlag = true;
                     }
                     return ret;
@@ -58,10 +58,10 @@ public abstract class Service<T> implements IService<T>{
         return -1;
     }
 
-    protected abstract ServiceTask createTask(T seg, BlockingQueue<Integer> bq);
+    protected abstract SearchTask createTask(T seg, BlockingQueue<Integer> bq);
 
     @Override
-    public synchronized void addIndexSegment(T segment) {
-        segList.add(segment);
+    public synchronized void addSubIndex(T subIndex) {
+        segList.add(subIndex);
     }
 }
