@@ -1,13 +1,13 @@
 package sivan.yue.quarrier.load.segmentLoad;
 
-import sivan.yue.quarrier.ITask;
 import sivan.yue.quarrier.data.Segment;
+import sivan.yue.quarrier.load.LoadTask;
 import sivan.yue.quarrier.search.segmentSearch.SegmentSearch;
 
 /**
  * Created by xiwen.yxw on 2017/2/15.
  */
-public class SegmentLoadTask implements ITask{
+public class SegmentLoadTask extends LoadTask {
 
     private SegmentSearch service;
 
@@ -19,6 +19,6 @@ public class SegmentLoadTask implements ITask{
     public void run() {
         Segment segment = new Segment();
         // TODO
-        service.addIndexSegment(segment);
+        service.addSubIndex(segment);
     }
 }
