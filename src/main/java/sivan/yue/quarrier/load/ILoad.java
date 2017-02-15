@@ -1,6 +1,4 @@
-package sivan.yue.quarrier.search.load;
-
-import sivan.yue.quarrier.search.service.IService;
+package sivan.yue.quarrier.load;
 
 /**
  * Created by xiwen.yxw on 2017/2/15.

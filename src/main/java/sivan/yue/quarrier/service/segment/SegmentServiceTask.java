@@ -1,7 +1,7 @@
-package sivan.yue.quarrier.search.service.segment;
+package sivan.yue.quarrier.service.segment;
 
 import sivan.yue.quarrier.data.Segment;
-import sivan.yue.quarrier.search.service.ServiceTask;
+import sivan.yue.quarrier.service.ServiceTask;
 import java.util.concurrent.BlockingQueue;
 
 /**

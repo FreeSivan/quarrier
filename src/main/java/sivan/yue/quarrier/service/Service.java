@@ -1,4 +1,4 @@
-package sivan.yue.quarrier.search.service;
+package sivan.yue.quarrier.service;
 
 import sivan.yue.quarrier.schedule.ScheduleCenter;
 

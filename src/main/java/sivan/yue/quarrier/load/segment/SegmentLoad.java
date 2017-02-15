@@ -1,9 +1,9 @@
-package sivan.yue.quarrier.search.load.segment;
+package sivan.yue.quarrier.load.segment;
 
 import sivan.yue.quarrier.data.Segment;
 import sivan.yue.quarrier.schedule.ScheduleCenter;
-import sivan.yue.quarrier.search.load.ILoad;
-import sivan.yue.quarrier.search.service.segment.SegmentService;
+import sivan.yue.quarrier.load.ILoad;
+import sivan.yue.quarrier.service.segment.SegmentService;
 
 /**
  * Created by xiwen.yxw on 2017/2/15.

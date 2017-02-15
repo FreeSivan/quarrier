@@ -1,4 +1,4 @@
-package sivan.yue.quarrier.search.service;
+package sivan.yue.quarrier.service;
 
 /**
  * Created by xiwen.yxw on 2017/2/15.
