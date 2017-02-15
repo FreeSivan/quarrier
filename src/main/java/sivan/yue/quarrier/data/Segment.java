@@ -19,10 +19,13 @@ import java.util.*;
 public class Segment {
 
     /**
-     * 倒排索引表，索引key到倒排项
+     * 建库时的倒排索引表，索引key到倒排项，需要对key值排序
      */
     public Map<Integer, Index> index = new TreeMap<>();
-
+    /**
+     * 搜索时的倒排索引表，不需要对key值排序
+     */
+    public Map<Integer, Index> indexRun = new HashMap<>();
     /**
      * 倒排项数据存放数组
      */

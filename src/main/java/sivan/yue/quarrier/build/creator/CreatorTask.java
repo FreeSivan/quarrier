@@ -1,8 +1,8 @@
 package sivan.yue.quarrier.build.creator;
 
+import sivan.yue.quarrier.build.BuildTask;
 import sivan.yue.quarrier.build.merger.MergerBunch;
 import sivan.yue.quarrier.data.Document;
-import sivan.yue.quarrier.ITask;
 import sivan.yue.quarrier.data.Segment;
 
 import java.util.*;
@@ -15,7 +15,7 @@ import java.util.*;
  *
  * Created by xiwen.yxw on 2017/2/10.
  */
-public class CreatorTask implements ITask {
+public class CreatorTask extends BuildTask {
 
     private List<Document> docList = new ArrayList<>();
 
@@ -73,7 +73,11 @@ public class CreatorTask implements ITask {
         // 以4个byte为一组作为一个key值
         for (int i = 0; i < data.length; i+=4) {
             // 构造key值
-            int value = getKey(data, i, i + 3);
+            int value = getKey(data, i);
+            // 只对奇数帧建库
+            if (value == 0) {
+                continue;
+            }
             // 创建倒排索引结构
             Segment.IndexMeta indexMeta = new Segment.IndexMeta();
             // 保存key值在文档中的偏移量
@@ -89,6 +93,18 @@ public class CreatorTask implements ITask {
                 lst.add(indexMeta);
                 tmpMap.put(value, lst);
             }
+            // 我也不知道下面的代码是要干嘛,指纹提取的同学要求索引这个key
+            if (i + 32 * 4 < data.length) {
+                int value2 = getKey2(data, value, i+32*4);
+                if (tmpMap.containsKey(value2)) {
+                    tmpMap.get(value2).add(indexMeta);
+                }
+                else {
+                    List<Segment.IndexMeta> lst = new ArrayList<>();
+                    lst.add(indexMeta);
+                    tmpMap.put(value2, lst);
+                }
+            }
         }
         // 将临时倒排结构写入到segment结构的倒排表中
         for (Map.Entry<Integer, List<Segment.IndexMeta>> entry: tmpMap.entrySet()) {
@@ -98,7 +114,7 @@ public class CreatorTask implements ITask {
             // 创建新的倒排索引，持有key值及倒排项的位置信息
             Segment.Index index = new Segment.Index();
             index.offset = segment.indexData.size();
-            index.length = tmpMap.size();
+            index.length = docIdList.size();
             segment.index.put(key, index);
             // 倒排项写入segment的倒排项数组中
             for (Segment.IndexMeta indexMeta : docIdList) {
@@ -107,8 +123,23 @@ public class CreatorTask implements ITask {
         }
     }
 
-    private int getKey(byte[] data, int left, int right) {
-        return 0;
+    private int getKey(byte[] data, int offset) {
+        int value = (int) ((data[offset] & 0xFF) |
+                ((data[offset + 1] & 0xFF) << 8) |
+                ((data[offset + 2] & 0xFF) << 16)|
+                ((data[offset + 3] & 0xFF) << 24));
+        if ((value & 1) == 0) {
+            return 0;
+        }
+        return (value >> 1) & 0x7FFFFFFF;
+    }
+
+    private int getKey2(byte[] data, int key, int offset) {
+        int value = (int)((data[offset] & 0xFF) |
+                ((data[offset + 1] & 0xFF) << 8) |
+                ((data[offset + 2] & 0xFF) << 16)|
+                ((data[offset + 3] & 0xFF) << 24));
+        return  (key >> 1) & 0x7FFF8000 + (value>>1) & 0x7F;
     }
 
     public List<Document> getDocList() {

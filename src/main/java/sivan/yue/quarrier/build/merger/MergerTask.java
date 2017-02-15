@@ -1,7 +1,7 @@
 package sivan.yue.quarrier.build.merger;
 
+import sivan.yue.quarrier.build.BuildTask;
 import sivan.yue.quarrier.data.Segment;
-import sivan.yue.quarrier.ITask;
 
 import java.util.*;
 
@@ -9,7 +9,7 @@ import java.util.*;
  * description:合并segment任务
  * Created by xiwen.yxw on 2017/2/10.
  */
-public class MergerTask implements ITask {
+public class MergerTask extends BuildTask {
 
     private List<Segment> segments = new ArrayList<>();
 
