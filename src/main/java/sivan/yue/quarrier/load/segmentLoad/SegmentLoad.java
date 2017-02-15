@@ -1,9 +1,9 @@
-package sivan.yue.quarrier.load.segment;
+package sivan.yue.quarrier.load.segmentLoad;
 
 import sivan.yue.quarrier.data.Segment;
 import sivan.yue.quarrier.schedule.ScheduleCenter;
 import sivan.yue.quarrier.load.ILoad;
-import sivan.yue.quarrier.search.segment.SegmentSearch;
+import sivan.yue.quarrier.search.segmentSearch.SegmentSearch;
 
 /**
  * Created by xiwen.yxw on 2017/2/15.
@@ -22,7 +22,7 @@ public class SegmentLoad implements ILoad{
         // TODO 迭代每一个
         Segment segment = new Segment();
         // TODO 创建segment的工作
-        service.addIndexSegment(segment);
+        service.addSubIndex(segment);
     }
 
     @Override

@@ -1,8 +1,8 @@
-package sivan.yue.quarrier.load.segment;
+package sivan.yue.quarrier.load.segmentLoad;
 
 import sivan.yue.quarrier.ITask;
 import sivan.yue.quarrier.data.Segment;
-import sivan.yue.quarrier.search.segment.SegmentSearch;
+import sivan.yue.quarrier.search.segmentSearch.SegmentSearch;
 
 /**
  * Created by xiwen.yxw on 2017/2/15.
