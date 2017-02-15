@@ -1,7 +1,6 @@
 package sivan.yue.quarrier.search.service;
 
 import sivan.yue.quarrier.schedule.ScheduleCenter;
-import sivan.yue.quarrier.search.SearchTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +30,10 @@ public abstract class Service<T> implements IService<T>{
     @Override
     public int multiSearch(byte[] rawData) {
         BlockingQueue<Integer> bq = new LinkedBlockingQueue<>();
-        List<SearchTask> searchTasks = new ArrayList<>();
+        List<ServiceTask> searchTasks = new ArrayList<>();
         int count = 0;
         for (T seg : segList) {
-            SearchTask task = createTask(seg, bq);
+            ServiceTask task = createTask(seg, bq);
             searchTasks.add(task);
             ScheduleCenter.INSTANCE.addTask(task);
         }
@@ -45,7 +44,7 @@ public abstract class Service<T> implements IService<T>{
             try {
                 int ret = bq.take();
                 if (ret >= 0) {
-                    for (SearchTask t : searchTasks) {
+                    for (ServiceTask t : searchTasks) {
                         t.overFlag = true;
                     }
                     return ret;
@@ -59,7 +58,7 @@ public abstract class Service<T> implements IService<T>{
         return -1;
     }
 
-    protected abstract SearchTask createTask(T seg, BlockingQueue<Integer> bq);
+    protected abstract ServiceTask createTask(T seg, BlockingQueue<Integer> bq);
 
     @Override
     public synchronized void addIndexSegment(T segment) {

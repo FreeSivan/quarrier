@@ -1,7 +1,7 @@
 package sivan.yue.quarrier.search.service.segment;
 
 import sivan.yue.quarrier.data.Segment;
-import sivan.yue.quarrier.search.SearchTask;
+import sivan.yue.quarrier.search.service.ServiceTask;
 import sivan.yue.quarrier.search.service.Service;
 
 import java.util.concurrent.BlockingQueue;
@@ -16,7 +16,7 @@ public class SegmentService extends Service<Segment>{
     }
 
     @Override
-    protected SearchTask createTask(Segment seg, BlockingQueue<Integer> bq) {
+    protected ServiceTask createTask(Segment seg, BlockingQueue<Integer> bq) {
         SegmentServiceTask serviceTask = new SegmentServiceTask();
         serviceTask.setBq(bq);
         serviceTask.setSegment(seg);

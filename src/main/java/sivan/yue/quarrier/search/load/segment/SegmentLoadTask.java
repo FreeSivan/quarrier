@@ -2,7 +2,6 @@ package sivan.yue.quarrier.search.load.segment;
 
 import sivan.yue.quarrier.ITask;
 import sivan.yue.quarrier.data.Segment;
-import sivan.yue.quarrier.search.SearchTask;
 import sivan.yue.quarrier.search.service.segment.SegmentService;
 
 /**

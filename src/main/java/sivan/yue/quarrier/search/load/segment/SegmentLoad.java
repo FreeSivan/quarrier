@@ -19,6 +19,7 @@ public class SegmentLoad implements ILoad{
 
     @Override
     public void singleLoad(String path) {
+        // TODO 迭代每一个
         Segment segment = new Segment();
         // TODO 创建segment的工作
         service.addIndexSegment(segment);
@@ -28,6 +29,7 @@ public class SegmentLoad implements ILoad{
     public void multiLoad(String path) {
         // TODO 迭代每一个
         SegmentLoadTask task = new SegmentLoadTask(service);
+        // TODO 创建segment的工作
         ScheduleCenter.INSTANCE.addTask(task);
     }
 }
