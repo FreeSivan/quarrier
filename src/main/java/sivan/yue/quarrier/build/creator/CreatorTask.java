@@ -2,8 +2,8 @@ package sivan.yue.quarrier.build.creator;
 
 import sivan.yue.quarrier.build.BuildTask;
 import sivan.yue.quarrier.build.merger.MergerBunch;
-import sivan.yue.quarrier.data.Document;
-import sivan.yue.quarrier.data.Segment;
+import sivan.yue.quarrier.common.data.Document;
+import sivan.yue.quarrier.common.data.Segment;
 
 import java.util.*;
 

@@ -1,12 +1,11 @@
 package sivan.yue.quarrier.build.writer;
 
 import sivan.yue.quarrier.build.BuildTask;
-import sivan.yue.quarrier.data.Segment;
+import sivan.yue.quarrier.common.data.Segment;
 
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +41,40 @@ public class WriterTask extends BuildTask {
         writePositFile(positName, seg.posit);
         String pValueName = indexDir + index + ".pv";
         writePValueName(pValueName, seg.positData);
+        writeIndexToSegmentFile(index);
     }
+
+    /**
+     *
+     * @param index
+     */
+    private void writeIndexToSegmentFile(int index) {
+        String fileName = indexDir + "segment";
+        try {
+            RandomAccessFile file = new RandomAccessFile(fileName, "rw");
+            FileChannel channel = file.getChannel();
+            FileLock lock = null;
+            while(true) {
+                try {
+                    lock = channel.lock();
+                    break;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            file.seek(file.length());
+            file.writeInt(index);
+            lock.release();
+            channel.close();
+            file.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     /**
      *

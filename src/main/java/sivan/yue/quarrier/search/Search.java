@@ -1,6 +1,6 @@
 package sivan.yue.quarrier.search;
 
-import sivan.yue.quarrier.schedule.ScheduleCenter;
+import sivan.yue.quarrier.common.schedule.ScheduleCenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,17 +15,7 @@ public abstract class Search<T> implements ISearch<T> {
     protected List<T> segList = new ArrayList<T>();
 
     @Override
-    public int singleSearch(byte[] rawData) {
-        for (T seg : segList) {
-            int retId = singleSearchSeg(seg, rawData);
-            if (retId > 0) {
-                return retId;
-            }
-        }
-        return -1;
-    }
-
-    protected abstract int singleSearchSeg(T seg, byte[] rawData);
+    public abstract int singleSearch(byte[] rawData);
 
     @Override
     public int multiSearch(byte[] rawData) {

@@ -1,6 +1,6 @@
 package sivan.yue.quarrier.load.segmentLoad;
 
-import sivan.yue.quarrier.data.Segment;
+import sivan.yue.quarrier.common.data.Segment;
 import sivan.yue.quarrier.load.LoadTask;
 import sivan.yue.quarrier.search.segmentSearch.SegmentSearch;
 

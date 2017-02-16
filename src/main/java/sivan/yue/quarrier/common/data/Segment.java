@@ -1,4 +1,4 @@
-package sivan.yue.quarrier.data;
+package sivan.yue.quarrier.common.data;
 
 import java.util.*;
 

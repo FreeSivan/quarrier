@@ -1,8 +1,8 @@
 package sivan.yue.quarrier.build.writer;
 
 import sivan.yue.quarrier.build.Bunch;
-import sivan.yue.quarrier.data.Segment;
-import sivan.yue.quarrier.schedule.ScheduleCenter;
+import sivan.yue.quarrier.common.data.Segment;
+import sivan.yue.quarrier.common.schedule.ScheduleCenter;
 
 /**
  * description: segment bunch

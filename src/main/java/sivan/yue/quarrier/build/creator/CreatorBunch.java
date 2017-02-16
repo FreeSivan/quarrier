@@ -1,8 +1,8 @@
 package sivan.yue.quarrier.build.creator;
 
 import sivan.yue.quarrier.build.Bunch;
-import sivan.yue.quarrier.data.Document;
-import sivan.yue.quarrier.schedule.ScheduleCenter;
+import sivan.yue.quarrier.common.data.Document;
+import sivan.yue.quarrier.common.schedule.ScheduleCenter;
 
 /**
  * description: creator bunch

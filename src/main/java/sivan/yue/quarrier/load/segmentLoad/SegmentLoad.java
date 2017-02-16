@@ -1,14 +1,13 @@
 package sivan.yue.quarrier.load.segmentLoad;
 
-import sivan.yue.quarrier.data.Segment;
-import sivan.yue.quarrier.schedule.ScheduleCenter;
-import sivan.yue.quarrier.load.ILoad;
+import sivan.yue.quarrier.common.data.Segment;
+import sivan.yue.quarrier.load.Load;
 import sivan.yue.quarrier.search.segmentSearch.SegmentSearch;
 
 /**
  * Created by xiwen.yxw on 2017/2/15.
  */
-public class SegmentLoad implements ILoad{
+public class SegmentLoad extends Load {
 
     private SegmentSearch service;
 
@@ -26,10 +25,7 @@ public class SegmentLoad implements ILoad{
     }
 
     @Override
-    public void multiLoad(String path) {
-        // TODO 迭代每一个
-        SegmentLoadTask task = new SegmentLoadTask(service);
-        // TODO 创建segment的工作
-        ScheduleCenter.INSTANCE.addTask(task);
+    protected void createTask(int index) {
+
     }
 }

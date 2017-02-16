@@ -1,4 +1,4 @@
-package sivan.yue.quarrier.schedule;
+package sivan.yue.quarrier.common.schedule;
 
 import sivan.yue.quarrier.ITask;
 

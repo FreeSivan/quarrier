@@ -1,6 +1,6 @@
 package sivan.yue.quarrier.search.segmentSearch;
 
-import sivan.yue.quarrier.data.Segment;
+import sivan.yue.quarrier.common.data.Segment;
 import sivan.yue.quarrier.search.SearchTask;
 import java.util.concurrent.BlockingQueue;
 

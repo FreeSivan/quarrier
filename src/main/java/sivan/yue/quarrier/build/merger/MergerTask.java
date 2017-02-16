@@ -1,7 +1,7 @@
 package sivan.yue.quarrier.build.merger;
 
 import sivan.yue.quarrier.build.BuildTask;
-import sivan.yue.quarrier.data.Segment;
+import sivan.yue.quarrier.common.data.Segment;
 
 import java.util.*;
 
