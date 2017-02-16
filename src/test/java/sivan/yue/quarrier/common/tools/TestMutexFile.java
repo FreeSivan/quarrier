@@ -65,7 +65,7 @@ public class TestMutexFile {
             while (true) {
                 try {
                     Thread.sleep(1000);
-                    ThreadMutexFile mFile = new ThreadMutexFile(FILE_NAME, "r");
+                    ThreadMutexFile mFile = new ThreadMutexFile(FILE_NAME, "rw");
                     List<Integer> lst = mFile.readIntList();
                     mFile.close();
                     System.out.println("==============================");

@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * description : 对类加锁的多线程互斥访问文件类
+ *
+ * 由于是对类加锁，所以即使是打开的不同文件，
+ * 对不同文件的读写也会互相阻塞工作线程
+ * 这个类只用于打开segment文件，不打开其他文件
  * Created by xiwen.yxw on 2017/2/16.
  */
 public class ThreadMutexFile implements Closeable {

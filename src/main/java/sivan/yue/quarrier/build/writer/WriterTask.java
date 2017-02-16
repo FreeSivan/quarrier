@@ -3,6 +3,7 @@ package sivan.yue.quarrier.build.writer;
 import sivan.yue.quarrier.build.BuildTask;
 import sivan.yue.quarrier.common.data.Segment;
 import sivan.yue.quarrier.common.tools.ProcessMutexFile;
+import sivan.yue.quarrier.common.tools.RWIndexPositFile;
 import sivan.yue.quarrier.common.tools.ThreadMutexFile;
 
 import java.io.*;
@@ -34,115 +35,18 @@ public class WriterTask extends BuildTask {
         // 四个文件 .in .iv .po .pv
         int index = getCount();
         String indexName = indexDir + index + ".in";
-        writeIndexFile(indexName, seg.index);
+        RWIndexPositFile.writeIndexFile(indexName, seg);
         String iValueName = indexDir + index + ".iv";
-        writeIValueFile(iValueName, seg.indexData);
+        RWIndexPositFile.writeIValueFile(iValueName, seg);
         String positName = indexDir + index + ".po";
-        writePositFile(positName, seg.posit);
+        RWIndexPositFile.writePositFile(positName, seg);
         String pValueName = indexDir + index + ".pv";
-        writePValueName(pValueName, seg.positData);
-        writeIndexToSegmentFile(index);
-    }
-
-    /**
-     *
-     * @param index
-     */
-    private void writeIndexToSegmentFile(int index) {
-        String fileName = indexDir + "segment";
+        RWIndexPositFile.writePValueName(pValueName, seg);
+        String segmentName = indexDir + "segment";
         try {
-            ThreadMutexFile file = new ThreadMutexFile(fileName, "rw");
+            ThreadMutexFile file = new ThreadMutexFile(segmentName, "rw");
             file.writeInt(index);
             file.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
-     *
-     * @param pValueName
-     * @param positData
-     */
-    private void writePValueName(String pValueName, Vector<Byte> positData) {
-        try {
-            DataOutputStream out=new DataOutputStream(new FileOutputStream(pValueName));
-            byte[] bytes = new byte[positData.size()];
-            // TODO 这地方太low了
-            for (int i = 0; i < positData.size(); ++i) {
-                bytes[i] = positData.get(i);
-            }
-            out.write(bytes, 0, bytes.length);
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     *
-     * @param positName
-     * @param posit
-     */
-    private void writePositFile(String positName, Map<Integer, Segment.Posit> posit) {
-        try {
-            DataOutputStream out=new DataOutputStream(new FileOutputStream(positName));
-            for (Map.Entry<Integer, Segment.Posit> entry : posit.entrySet()) {
-                Integer key = entry.getKey();
-                Segment.Posit positValue = entry.getValue();
-                out.writeInt(key);
-                out.writeInt(positValue.length);
-                out.writeInt(positValue.offset);
-                out.writeInt(positValue.orgId);
-            }
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     *
-     * @param iValueName
-     * @param indexData
-     */
-    private void writeIValueFile(String iValueName, Vector<Segment.IndexMeta> indexData) {
-        try {
-            DataOutputStream out=new DataOutputStream(new FileOutputStream(iValueName));
-            for (Segment.IndexMeta indexMeta : indexData) {
-                out.writeInt(indexMeta.docId);
-                out.writeInt(indexMeta.offset);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     *
-     * @param indexName
-     * @param index
-     */
-    private void writeIndexFile(String indexName, Map<Integer, Segment.Index> index) {
-        try {
-            DataOutputStream out=new DataOutputStream(new FileOutputStream(indexName));
-            for (Map.Entry<Integer, Segment.Index> entry : index.entrySet()) {
-                Integer key = entry.getKey();
-                Segment.Index inx = entry.getValue();
-                out.writeInt(key);
-                out.writeInt(inx.length);
-                out.writeInt(inx.offset);
-            }
-            out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

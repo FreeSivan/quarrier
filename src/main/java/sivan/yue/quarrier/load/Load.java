@@ -1,7 +1,5 @@
 package sivan.yue.quarrier.load;
 
-import sivan.yue.quarrier.build.writer.WriterTask;
-import sivan.yue.quarrier.common.tools.ProcessMutexFile;
 import sivan.yue.quarrier.common.tools.ThreadMutexFile;
 
 import java.io.FileNotFoundException;
@@ -24,13 +22,13 @@ public abstract class Load implements ILoad {
 
     @Override
     public void multiLoad(String path) {
-        String fName = WriterTask.indexDir + "segment";
+        String fName = path + "segment";
         try {
             ThreadMutexFile file = new ThreadMutexFile(fName, "r");
             List<Integer> indexLst  = file.readIntList();
             file.close();
             for (Integer index : indexLst) {
-                createTask(index);
+                createTask(path, index);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -39,5 +37,5 @@ public abstract class Load implements ILoad {
         }
     }
 
-    protected abstract void createTask(int index);
+    protected abstract void createTask(String path, int index);
 }
