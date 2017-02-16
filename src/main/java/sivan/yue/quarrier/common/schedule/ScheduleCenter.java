@@ -19,7 +19,7 @@ public class ScheduleCenter {
     private ThreadPoolExecutor threadPool = null;
 
     private ScheduleCenter() {
-        int minSize = 5;
+        int minSize = 6;
         int maxSize = 20;
         int keepAliveTime = 60;
         BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<Runnable>(512);

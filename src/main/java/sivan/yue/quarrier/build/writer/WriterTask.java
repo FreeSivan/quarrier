@@ -2,10 +2,10 @@ package sivan.yue.quarrier.build.writer;
 
 import sivan.yue.quarrier.build.BuildTask;
 import sivan.yue.quarrier.common.data.Segment;
+import sivan.yue.quarrier.common.tools.ProcessMutexFile;
+import sivan.yue.quarrier.common.tools.ThreadMutexFile;
 
 import java.io.*;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,28 +51,14 @@ public class WriterTask extends BuildTask {
     private void writeIndexToSegmentFile(int index) {
         String fileName = indexDir + "segment";
         try {
-            RandomAccessFile file = new RandomAccessFile(fileName, "rw");
-            FileChannel channel = file.getChannel();
-            FileLock lock = null;
-            while(true) {
-                try {
-                    lock = channel.lock();
-                    break;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            file.seek(file.length());
+            ThreadMutexFile file = new ThreadMutexFile(fileName, "rw");
             file.writeInt(index);
-            lock.release();
-            channel.close();
             file.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -85,7 +71,7 @@ public class WriterTask extends BuildTask {
         try {
             DataOutputStream out=new DataOutputStream(new FileOutputStream(pValueName));
             byte[] bytes = new byte[positData.size()];
-            // TODO 这地方太low了，后面要实现一个动态的byte数组来取代vector
+            // TODO 这地方太low了
             for (int i = 0; i < positData.size(); ++i) {
                 bytes[i] = positData.get(i);
             }

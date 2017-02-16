@@ -1,13 +1,12 @@
 package sivan.yue.quarrier.load;
 
 import sivan.yue.quarrier.build.writer.WriterTask;
-import sivan.yue.quarrier.load.ILoad;
+import sivan.yue.quarrier.common.tools.ProcessMutexFile;
+import sivan.yue.quarrier.common.tools.ThreadMutexFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
+import java.util.List;
 
 /**
  * description: load数据基类
@@ -27,26 +26,12 @@ public abstract class Load implements ILoad {
     public void multiLoad(String path) {
         String fName = WriterTask.indexDir + "segment";
         try {
-            RandomAccessFile file = new RandomAccessFile(fName, "r");
-            FileChannel channel = file.getChannel();
-            FileLock lock = null;
-            while(true) {
-                try {
-                    lock = channel.lock();
-                    break;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            int count = 0;
-            while(count < file.length()) {
-                int index = file.readInt();
-                count += 4;
+            ThreadMutexFile file = new ThreadMutexFile(fName, "r");
+            List<Integer> indexLst  = file.readIntList();
+            file.close();
+            for (Integer index : indexLst) {
                 createTask(index);
             }
-            lock.release();
-            channel.close();
-            file.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
