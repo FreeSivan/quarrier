@@ -10,6 +10,18 @@ import java.util.List;
  */
 public class SegmentSearchTool {
 
+    public static byte[] table = new byte[65536];
+
+    static {
+        for (int i = 0; i < table.length; ++i) {
+            table[i] = countBitOne(i);
+        }
+    }
+
+    private static byte countBitOne(int i) {
+        return 0;
+    }
+
     public static int searchSegment(Segment segment, byte[] rawData) {
         if ((rawData.length % 4) != 0) {
             throw new FileFormatErrorException("rawData format error!");
@@ -41,6 +53,19 @@ public class SegmentSearchTool {
     }
 
     private static boolean contentMatch(byte[] rawData, List<Byte> content) {
+        if (rawData.length != content.size()) {
+            return false;
+        }
+        Byte[] cont = content.toArray(new Byte[content.size()]);
+        int count = 0;
+        for (int i = 0; i < rawData.length; i += 2) {
+            int key1 = getMetaKeyFromBuffer(rawData, i);
+            int key2 = getMetaKeyFromBuffer(cont, i);
+            count += table[key1 ^ key2];
+        }
+        if (count < rawData.length * 8 * 0.37) {
+            return true;
+        }
         return false;
     }
 
