@@ -9,28 +9,17 @@ import java.util.concurrent.BlockingQueue;
  */
 public class SegmentSearchTask extends SearchTask {
 
-    private BlockingQueue<Integer> bq;
-
     private Segment segment;
+
+    public SegmentSearchTask(BlockingQueue<Integer> bq, byte[] rawData, Segment segment) {
+        super(bq, rawData);
+        this.segment = segment;
+    }
 
     @Override
     public void run() {
-
+        int ret = SegmentSearchTool.searchSegment(segment, rawData);
+        bq.add(ret);
     }
 
-    public BlockingQueue<Integer> getBq() {
-        return bq;
-    }
-
-    public void setBq(BlockingQueue<Integer> bq) {
-        this.bq = bq;
-    }
-
-    public Segment getSegment() {
-        return segment;
-    }
-
-    public void setSegment(Segment segment) {
-        this.segment = segment;
-    }
 }

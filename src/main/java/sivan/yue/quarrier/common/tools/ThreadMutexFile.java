@@ -1,5 +1,7 @@
 package sivan.yue.quarrier.common.tools;
 
+import sivan.yue.quarrier.common.exception.FileFormatErrorException;
+
 import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -43,10 +45,12 @@ public class ThreadMutexFile implements Closeable {
         synchronized (ThreadMutexFile.class) {
             try {
                 long length = realFile.length();
+                if (length % 4 != 0) {
+                    throw new FileFormatErrorException("segment format error!");
+                }
                 long count = 0;
                 while (count + 4 <= length) {
                     int value = realFile.readInt();
-                    System.out.println("value = " + value);
                     lst.add(value);
                     count += 4;
                 }

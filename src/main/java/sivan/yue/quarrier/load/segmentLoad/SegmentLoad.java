@@ -1,6 +1,7 @@
 package sivan.yue.quarrier.load.segmentLoad;
 
 import sivan.yue.quarrier.common.data.Segment;
+import sivan.yue.quarrier.common.schedule.ScheduleCenter;
 import sivan.yue.quarrier.common.tools.RWIndexPositFile;
 import sivan.yue.quarrier.common.tools.ThreadMutexFile;
 import sivan.yue.quarrier.load.Load;
@@ -8,8 +9,7 @@ import sivan.yue.quarrier.search.segmentSearch.SegmentSearch;
 
 import java.io.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+
 
 /**
  * Created by xiwen.yxw on 2017/2/15.
@@ -54,6 +54,7 @@ public class SegmentLoad extends Load {
 
     @Override
     protected void createTask(String path, int index) {
-
+        SegmentLoadTask loadTask = new SegmentLoadTask(service, path, index);
+        ScheduleCenter.INSTANCE.addTask(loadTask);
     }
 }

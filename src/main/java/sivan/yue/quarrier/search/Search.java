@@ -23,7 +23,7 @@ public abstract class Search<T> implements ISearch<T> {
         List<SearchTask> searchTasks = new ArrayList<>();
         int count = 0;
         for (T seg : segList) {
-            SearchTask task = createTask(seg, bq);
+            SearchTask task = createTask(seg, bq, rawData);
             searchTasks.add(task);
             ScheduleCenter.INSTANCE.addTask(task);
         }
@@ -48,7 +48,7 @@ public abstract class Search<T> implements ISearch<T> {
         return -1;
     }
 
-    protected abstract SearchTask createTask(T seg, BlockingQueue<Integer> bq);
+    protected abstract SearchTask createTask(T seg, BlockingQueue<Integer> bq, byte[] rawData);
 
     @Override
     public synchronized void addSubIndex(T subIndex) {

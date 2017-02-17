@@ -16,8 +16,10 @@ public class SegmentLoadTask extends LoadTask {
 
     private Integer index;
 
-    public SegmentLoadTask(SegmentSearch service) {
+    public SegmentLoadTask(SegmentSearch service, String path, Integer index) {
         this.service = service;
+        this.path = path;
+        this.index = index;
     }
 
     @Override
@@ -34,11 +36,4 @@ public class SegmentLoadTask extends LoadTask {
         service.addSubIndex(segment);
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 }
