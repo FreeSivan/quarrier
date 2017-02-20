@@ -56,7 +56,6 @@ public class CreatorTask extends BuildTask {
         posit.length = doc.content.length;
         // 将正排结构存入正排索引表
         segment.posit.put(doc.docId, posit);
-        return;
     }
 
     /**
@@ -67,7 +66,6 @@ public class CreatorTask extends BuildTask {
      */
     private void buildIndex(Segment segment, Document doc) {
         byte[] data = doc.content;
-        int count = 0;
         // 临时的倒排表，treeMap存储key值，方便key值的排序
         Map<Integer, List<Segment.IndexMeta>> tmpMap = new TreeMap<>();
         // 以4个byte为一组作为一个key值
@@ -81,7 +79,7 @@ public class CreatorTask extends BuildTask {
             // 创建倒排索引结构
             Segment.IndexMeta indexMeta = new Segment.IndexMeta();
             // 保存key值在文档中的偏移量
-            indexMeta.offset = count++;
+            indexMeta.offset = i;  // TODO  思考
             // 保存文档的id
             indexMeta.docId = doc.docId;
             // 将key值及对应的倒排项加入临时倒排表
