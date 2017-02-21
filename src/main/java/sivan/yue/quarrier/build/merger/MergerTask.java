@@ -1,6 +1,7 @@
 package sivan.yue.quarrier.build.merger;
 
 import sivan.yue.quarrier.build.BuildTask;
+import sivan.yue.quarrier.build.Bunch;
 import sivan.yue.quarrier.common.data.Segment;
 
 import java.util.*;
@@ -11,6 +12,8 @@ import java.util.*;
  */
 public class MergerTask extends BuildTask {
 
+    private Bunch<Segment> bunchSegment;
+
     private List<Segment> segments = new ArrayList<>();
 
     @Override
@@ -20,6 +23,7 @@ public class MergerTask extends BuildTask {
             buildPosit(segment, seg);
         }
         buildIndex(segment);
+        bunchSegment.addItem(segment);
     }
 
     /**
@@ -107,6 +111,14 @@ public class MergerTask extends BuildTask {
 
     public void setSegments(List<Segment> segments) {
         this.segments = segments;
+    }
+
+    public Bunch<Segment> getBunchSegment() {
+        return bunchSegment;
+    }
+
+    public void setBunchSegment(Bunch<Segment> bunchSegment) {
+        this.bunchSegment = bunchSegment;
     }
 
     /**

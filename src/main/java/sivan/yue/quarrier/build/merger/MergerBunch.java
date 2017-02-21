@@ -14,16 +14,24 @@ import sivan.yue.quarrier.common.schedule.ScheduleCenter;
  */
 public class MergerBunch extends Bunch<Segment>{
 
-    public static final MergerBunch INSTANCE = new MergerBunch();
+    private Bunch<Segment> bunchSegment;
 
-    private MergerBunch() {
+    public MergerBunch() {
     }
 
     @Override
     protected void createTask() {
         MergerTask mergerTask = new MergerTask();
         mergerTask.setSegments(itemList);
+        mergerTask.setBunchSegment(bunchSegment);
         ScheduleCenter.INSTANCE.addTask(mergerTask);
     }
 
+    public Bunch<Segment> getBunchSegment() {
+        return bunchSegment;
+    }
+
+    public void setBunchSegment(Bunch<Segment> bunchSegment) {
+        this.bunchSegment = bunchSegment;
+    }
 }

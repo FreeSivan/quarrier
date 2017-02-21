@@ -17,6 +17,8 @@ import java.util.*;
  */
 public class CreatorTask extends BuildTask {
 
+    private MergerBunch mergerBunch;
+
     private List<Document> docList = new ArrayList<>();
 
     @Override
@@ -29,7 +31,7 @@ public class CreatorTask extends BuildTask {
             buildPosit(segment, doc);
         }
         // 将任务添加到调度中心
-        MergerBunch.INSTANCE.addItem(segment);
+        mergerBunch.addItem(segment);
     }
 
     /**
@@ -146,5 +148,9 @@ public class CreatorTask extends BuildTask {
 
     public void setDocList(List<Document> docList) {
         this.docList = docList;
+    }
+
+    public void setMergerBunch(MergerBunch mergerBunch) {
+        this.mergerBunch = mergerBunch;
     }
 }

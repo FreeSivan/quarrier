@@ -1,6 +1,7 @@
 package sivan.yue.quarrier.build.creator;
 
 import sivan.yue.quarrier.build.Bunch;
+import sivan.yue.quarrier.build.merger.MergerBunch;
 import sivan.yue.quarrier.common.data.Document;
 import sivan.yue.quarrier.common.schedule.ScheduleCenter;
 
@@ -14,9 +15,9 @@ import sivan.yue.quarrier.common.schedule.ScheduleCenter;
  */
 public class CreatorBunch extends Bunch<Document>{
 
-    public static final CreatorBunch INSTANCE = new CreatorBunch();
+    private MergerBunch mergerBunch;
 
-    private CreatorBunch() {
+    public CreatorBunch() {
     }
 
     @Override
@@ -30,8 +31,16 @@ public class CreatorBunch extends Bunch<Document>{
     @Override
     protected void createTask() {
         CreatorTask createTask = new CreatorTask();
+        createTask.setMergerBunch(mergerBunch);
         createTask.setDocList(itemList);
         ScheduleCenter.INSTANCE.addTask(createTask);
     }
 
+    public MergerBunch getMergerBunch() {
+        return mergerBunch;
+    }
+
+    public void setMergerBunch(MergerBunch mergerBunch) {
+        this.mergerBunch = mergerBunch;
+    }
 }
