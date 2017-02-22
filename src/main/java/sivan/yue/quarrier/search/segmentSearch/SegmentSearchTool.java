@@ -19,9 +19,17 @@ public class SegmentSearchTool {
     }
 
     private static byte countBitOne(int i) {
+        // TODO
         return 0;
     }
 
+    /**
+     * description: 从一个segment中检索rawData的操作
+     *
+     * @param segment 待检索的segment
+     * @param rawData 待检索的rawData
+     * @return 查询成功返回文档原始id，否则返回-1。
+     */
     public static int searchSegment(Segment segment, byte[] rawData) {
         if ((rawData.length % 4) != 0) {
             throw new FileFormatErrorException("rawData format error!");
@@ -49,9 +57,16 @@ public class SegmentSearchTool {
             }
             return -1;
         }
-        return 0;
+        return -1;
     }
 
+    /**
+     * description：判断元是二进制和指纹库中检索出来的指纹段是否相似
+     *
+     * @param rawData 原始二进制串
+     * @param content 指纹库中检索出来的数据段
+     * @return true ： 相似； false ：不相似
+     */
     private static boolean contentMatch(byte[] rawData, List<Byte> content) {
         if (rawData.length != content.size()) {
             return false;

@@ -57,7 +57,7 @@ public abstract class Bunch <T> {
     public synchronized  void addItem(T value) {
         this.itemList.add(value);
         itemCount ++;
-        if (itemCount == maxItemCount) {
+        if (itemCount >= maxItemCount) {
             createTask();
             itemList = new ArrayList<>();
             itemCount = 0;

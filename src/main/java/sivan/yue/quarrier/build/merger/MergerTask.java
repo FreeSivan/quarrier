@@ -4,6 +4,10 @@ import sivan.yue.quarrier.build.BuildTask;
 import sivan.yue.quarrier.build.Bunch;
 import sivan.yue.quarrier.common.data.Segment;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -109,10 +113,12 @@ public class MergerTask extends BuildTask {
             newPosit.offset = segment.positData.size();
             // 设置当前文件的长度
             newPosit.length = posit.length;
+            // 设置当前的原始ID
+            newPosit.orgId = posit.orgId;
             // 将正排放入正排索引表中
             segment.posit.put(key, newPosit);
             // 将seg持有的原始文件数据写入segment段中
-            for (int i = posit.offset; i < posit.length; ++i) {
+            for (int i = posit.offset; i < posit.offset + posit.length; ++i) {
                 segment.positData.add(seg.positData.get(i));
             }
         }

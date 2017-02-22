@@ -5,6 +5,10 @@ import sivan.yue.quarrier.build.merger.MergerBunch;
 import sivan.yue.quarrier.common.data.Document;
 import sivan.yue.quarrier.common.data.Segment;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -28,9 +32,9 @@ public class CreatorTask extends BuildTask {
     @Override
     public void run() {
         Segment segment = new Segment();
+        // 创建倒排索引
+        buildIndex(segment, docList);
         for (Document doc : docList) {
-            // 创建倒排索引
-            buildIndex(segment, doc);
             // 创建正排索引
             buildPosit(segment, doc);
         }
@@ -73,45 +77,45 @@ public class CreatorTask extends BuildTask {
      *description: 创建倒排索引函数
      *
      * @param segment segment对象，存储倒排索引
-     * @param doc 持有原始文件数据及数据信息的文档对象
+     * @param docList 持有原始文件数据及数据信息的文档对象
      */
-    private void buildIndex(Segment segment, Document doc) {
-        byte[] data = doc.content;
+    private void buildIndex(Segment segment, List<Document> docList) {
         // 临时的倒排表，treeMap存储key值，方便key值的排序
         Map<Integer, List<Segment.IndexMeta>> tmpMap = new TreeMap<>();
-        // 以4个byte为一组作为一个key值
-        for (int i = 0; i < data.length; i+=4) {
-            // 构造key值
-            int value = getKey(data, i);
-            // 只对奇数帧建库
-            if (value == 0) {
-                continue;
-            }
-            // 创建倒排索引结构
-            Segment.IndexMeta indexMeta = new Segment.IndexMeta();
-            // 保存key值在文档中的byte偏移量
-            indexMeta.offset = i;
-            // 保存文档的id
-            indexMeta.docId = doc.docId;
-            // 将key值及对应的倒排项加入临时倒排表
-            if (tmpMap.containsKey(value)) {
-                tmpMap.get(value).add(indexMeta);
-            }
-            else {
-                List<Segment.IndexMeta> lst = new ArrayList<>();
-                lst.add(indexMeta);
-                tmpMap.put(value, lst);
-            }
-            // 我也不知道下面的代码是要干嘛,指纹提取的同学要求索引这个key
-            if (i + 32 * 4 < data.length) {
-                int value2 = getKey2(data, value, i+32*4);
-                if (tmpMap.containsKey(value2)) {
-                    tmpMap.get(value2).add(indexMeta);
+        for (Document doc : docList) {
+            byte[] data = doc.content;
+            // 以4个byte为一组作为一个key值
+            for (int i = 0; i < data.length; i += 4) {
+                // 构造key值
+                int value = getKey(data, i);
+                // 只对奇数帧建库
+                if (value == -1) {
+                    continue;
                 }
-                else {
+                // 创建倒排索引结构
+                Segment.IndexMeta indexMeta = new Segment.IndexMeta();
+                // 保存key值在文档中的byte偏移量
+                indexMeta.offset = i;
+                // 保存文档的id
+                indexMeta.docId = doc.docId;
+                // 将key值及对应的倒排项加入临时倒排表
+                if (tmpMap.containsKey(value)) {
+                    tmpMap.get(value).add(indexMeta);
+                } else {
                     List<Segment.IndexMeta> lst = new ArrayList<>();
                     lst.add(indexMeta);
-                    tmpMap.put(value2, lst);
+                    tmpMap.put(value, lst);
+                }
+                // 我也不知道下面的代码是要干嘛,指纹提取的同学要求索引这个key
+                if (i + 32 * 4 < data.length) {
+                    int value2 = getKey2(data, value, i + 32 * 4);
+                    if (tmpMap.containsKey(value2)) {
+                        tmpMap.get(value2).add(indexMeta);
+                    } else {
+                        List<Segment.IndexMeta> lst = new ArrayList<>();
+                        lst.add(indexMeta);
+                        tmpMap.put(value2, lst);
+                    }
                 }
             }
         }
@@ -138,7 +142,7 @@ public class CreatorTask extends BuildTask {
                 ((data[offset + 2] & 0xFF) << 16)|
                 ((data[offset + 3] & 0xFF) << 24));
         if ((value & 1) == 0) {
-            return 0;
+            return -1;
         }
         return (value >> 1) & 0x7FFFFFFF;
     }

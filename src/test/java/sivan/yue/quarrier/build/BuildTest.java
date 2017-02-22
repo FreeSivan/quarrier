@@ -3,6 +3,7 @@ package sivan.yue.quarrier.build;
 import sivan.yue.quarrier.build.creator.CreatorBunch;
 import sivan.yue.quarrier.build.merger.MergerBunch;
 import sivan.yue.quarrier.build.writer.WriterBunch;
+import sivan.yue.quarrier.build.writer.WriterTask;
 import sivan.yue.quarrier.common.data.Document;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public class BuildTest {
 
     public void build(String path) {
         File dir = new File(path);
-        if (dir.isDirectory()) {
+        if (!dir.isDirectory()) {
             return;
         }
         int index = 0;
@@ -65,28 +66,35 @@ public class BuildTest {
                 doc.docId = index++;
                 doc.content = new byte[(int) rdRFile.length()];
                 rdRFile.read(doc.content);
-                doc.orgId = Integer.getInteger(file.getName().split(".")[0]);
+                String fileName = file.getName();
+                String[] strArr = fileName.split("\\.");
+                if (strArr.length != 2) {
+                    continue;
+                }
+                doc.orgId = Integer.parseInt(strArr[0]);
                 creatorBunch.addItem(doc);
+                rdRFile.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        creatorBunch.flush();
+        //creatorBunch.flush();
     }
 
     public static void main(String[] args) {
         CreatorBunch creatorBunch = new CreatorBunch(100);
         MergerBunch mergerBunch = new MergerBunch(5);
-        WriterBunch writerBunch = new WriterBunch(2);
+        WriterBunch writerBunch = new WriterBunch(1);
         creatorBunch.setMergerBunch(mergerBunch);
         mergerBunch.setBunchSegment(writerBunch);
 
+        WriterTask.indexDir = "D:\\work\\data\\afp\\index\\";
         BuildTest buildTest = new BuildTest();
         buildTest.setCreatorBunch(creatorBunch);
         buildTest.setMergerBunch(mergerBunch);
         buildTest.setWriterBunch(writerBunch);
-        buildTest.build("");
+        buildTest.build("D:\\work\\data\\afp\\afp");
     }
 }

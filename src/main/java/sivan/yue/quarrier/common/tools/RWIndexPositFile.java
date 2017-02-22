@@ -100,6 +100,7 @@ public class RWIndexPositFile {
                 out.writeInt(indexMeta.docId);
                 out.writeInt(indexMeta.offset);
             }
+            out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
