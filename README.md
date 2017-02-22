@@ -11,4 +11,6 @@
 
 难点很多，等待后续思考
 
-2017-2-17， 完成load和search模块，代码工作暂停，先把build，load和search测试完成后再继续
+2017-02-17， 完成load和search模块，代码工作暂停，先把build，load和search测试完成后再继续
+
+2017-02-22， build模块测试完成
