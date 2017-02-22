@@ -2,15 +2,12 @@ package sivan.yue.quarrier.build.writer;
 
 import sivan.yue.quarrier.build.BuildTask;
 import sivan.yue.quarrier.common.data.Segment;
-import sivan.yue.quarrier.common.tools.ProcessMutexFile;
 import sivan.yue.quarrier.common.tools.RWIndexPositFile;
 import sivan.yue.quarrier.common.tools.ThreadMutexFile;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

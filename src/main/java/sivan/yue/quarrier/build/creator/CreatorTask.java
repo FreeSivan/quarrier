@@ -5,10 +5,6 @@ import sivan.yue.quarrier.build.merger.MergerBunch;
 import sivan.yue.quarrier.common.data.Document;
 import sivan.yue.quarrier.common.data.Segment;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -38,10 +34,10 @@ public class CreatorTask extends BuildTask {
             // 创建正排索引
             buildPosit(segment, doc);
         }
-        // 将任务添加到调度中心
+        // 将segment添加到merger中
         mergerBunch.addItem(segment);
         delCount();
-        if (isIsFlush() && getCount()==0) {
+        if (isIsFlush() && getCount() == 0) {
             mergerBunch.flush();
             setIsFlush(false);
         }

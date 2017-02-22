@@ -34,7 +34,9 @@ public class CreatorBunch extends Bunch<Document>{
     }
     @Override
     public synchronized void flush() {
-        super.flush();
+        if (itemList.size() != 0) {
+            super.flush();
+        }
         CreatorTask.setIsFlush(true);
     }
     @Override

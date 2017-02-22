@@ -3,11 +3,6 @@ package sivan.yue.quarrier.build.merger;
 import sivan.yue.quarrier.build.BuildTask;
 import sivan.yue.quarrier.build.Bunch;
 import sivan.yue.quarrier.common.data.Segment;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -33,7 +28,8 @@ public class MergerTask extends BuildTask {
         buildIndex(segment);
         bunchSegment.addItem(segment);
         delCount();
-        if (isIsFlush() && getCount()==0) {
+
+        if (isIsFlush() && getCount() == 0) {
             bunchSegment.flush();
             setIsFlush(false);
         }
@@ -144,19 +140,19 @@ public class MergerTask extends BuildTask {
         count--;
     }
 
-    public static boolean isIsFlush() {
+    public synchronized static boolean isIsFlush() {
         return isFlush;
     }
 
-    public static void setIsFlush(boolean isFlush) {
+    public synchronized static void setIsFlush(boolean isFlush) {
         MergerTask.isFlush = isFlush;
     }
 
-    public static int getCount() {
+    public synchronized static int getCount() {
         return count;
     }
 
-    public static void setCount(int count) {
+    public synchronized static void setCount(int count) {
         MergerTask.count = count;
     }
 

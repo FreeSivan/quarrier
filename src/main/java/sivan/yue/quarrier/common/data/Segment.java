@@ -17,7 +17,6 @@ import java.util.*;
  * Created by xiwen.yxw on 2017/2/11.
  */
 public class Segment {
-
     /**
      * 建库时的倒排索引表，索引key到倒排项，需要对key值排序
      */
