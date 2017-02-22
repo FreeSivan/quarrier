@@ -30,7 +30,7 @@ public class SegmentSearchTool {
             int key = getKeyFromRawData(rawData, i);
             Segment.Index index = segment.indexRun.get(key);
             for (int j = index.offset; j < index.offset+index.length; ++j) {
-                Segment.IndexMeta indexMeta = segment.indexData.get(i);
+                Segment.IndexMeta indexMeta = segment.indexData.get(j);
                 int fileOffset = indexMeta.offset;
                 int docId = indexMeta.docId;
                 Segment.Posit posit = segment.posit.get(docId);
