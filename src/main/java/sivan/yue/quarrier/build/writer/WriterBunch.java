@@ -14,6 +14,14 @@ import sivan.yue.quarrier.common.schedule.ScheduleCenter;
  */
 public class WriterBunch extends Bunch<Segment>{
 
+    public WriterBunch() {
+        super(2);
+    }
+
+    public WriterBunch(int maxCount) {
+        super(maxCount);
+    }
+
     @Override
     protected void createTask() {
         WriterTask writerTask = new WriterTask();

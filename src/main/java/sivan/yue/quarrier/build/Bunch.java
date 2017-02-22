@@ -28,8 +28,8 @@ public abstract class Bunch <T> {
      */
     protected int maxItemCount;
 
-    public Bunch() {
-        this.init(10);
+    public Bunch(int maxCount) {
+        this.init(maxCount);
     }
 
     private void init(int maxCount) {
@@ -62,6 +62,12 @@ public abstract class Bunch <T> {
             itemList = new ArrayList<>();
             itemCount = 0;
         }
+    }
+
+    public synchronized void flush() {
+        createTask();
+        itemList = new ArrayList<>();
+        itemCount = 0;
     }
 
     /**

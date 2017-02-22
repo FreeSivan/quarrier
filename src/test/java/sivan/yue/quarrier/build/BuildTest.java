@@ -73,12 +73,13 @@ public class BuildTest {
                 e.printStackTrace();
             }
         }
+        creatorBunch.flush();
     }
 
     public static void main(String[] args) {
-        CreatorBunch creatorBunch = new CreatorBunch();
-        MergerBunch mergerBunch = new MergerBunch();
-        WriterBunch writerBunch = new WriterBunch();
+        CreatorBunch creatorBunch = new CreatorBunch(100);
+        MergerBunch mergerBunch = new MergerBunch(5);
+        WriterBunch writerBunch = new WriterBunch(2);
         creatorBunch.setMergerBunch(mergerBunch);
         mergerBunch.setBunchSegment(writerBunch);
 

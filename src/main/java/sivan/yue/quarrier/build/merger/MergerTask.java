@@ -16,6 +16,10 @@ public class MergerTask extends BuildTask {
 
     private List<Segment> segments = new ArrayList<>();
 
+    private static boolean isFlush;
+
+    private static int count = 0;
+
     @Override
     public void run() {
         Segment segment = new Segment();
@@ -24,6 +28,11 @@ public class MergerTask extends BuildTask {
         }
         buildIndex(segment);
         bunchSegment.addItem(segment);
+        delCount();
+        if (isIsFlush() && getCount()==0) {
+            bunchSegment.flush();
+            setIsFlush(false);
+        }
     }
 
     /**
@@ -119,6 +128,30 @@ public class MergerTask extends BuildTask {
 
     public void setBunchSegment(Bunch<Segment> bunchSegment) {
         this.bunchSegment = bunchSegment;
+    }
+
+    public synchronized static void addCount() {
+        count++;
+    }
+
+    public synchronized static void delCount() {
+        count--;
+    }
+
+    public static boolean isIsFlush() {
+        return isFlush;
+    }
+
+    public static void setIsFlush(boolean isFlush) {
+        MergerTask.isFlush = isFlush;
+    }
+
+    public static int getCount() {
+        return count;
+    }
+
+    public static void setCount(int count) {
+        MergerTask.count = count;
     }
 
     /**

@@ -18,21 +18,31 @@ public class CreatorBunch extends Bunch<Document>{
     private MergerBunch mergerBunch;
 
     public CreatorBunch() {
+        super(100);
+    }
+
+    public CreatorBunch(int maxCount) {
+        super(maxCount);
     }
 
     @Override
-    public synchronized  void addItem(Document value) {
+    public void addItem(Document value) {
         if (value.content.length % 4 != 0) {
             return;
         }
         super.addItem(value);
     }
-
+    @Override
+    public synchronized void flush() {
+        super.flush();
+        CreatorTask.setIsFlush(true);
+    }
     @Override
     protected void createTask() {
         CreatorTask createTask = new CreatorTask();
         createTask.setMergerBunch(mergerBunch);
         createTask.setDocList(itemList);
+        CreatorTask.addCount();
         ScheduleCenter.INSTANCE.addTask(createTask);
     }
 

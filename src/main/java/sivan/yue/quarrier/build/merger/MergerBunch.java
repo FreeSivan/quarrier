@@ -1,6 +1,7 @@
 package sivan.yue.quarrier.build.merger;
 
 import sivan.yue.quarrier.build.Bunch;
+import sivan.yue.quarrier.build.creator.CreatorTask;
 import sivan.yue.quarrier.common.data.Segment;
 import sivan.yue.quarrier.common.schedule.ScheduleCenter;
 
@@ -17,6 +18,17 @@ public class MergerBunch extends Bunch<Segment>{
     private Bunch<Segment> bunchSegment;
 
     public MergerBunch() {
+        super(10);
+    }
+
+    public MergerBunch(int maxCount) {
+        super(maxCount);
+    }
+
+    @Override
+    public synchronized void flush() {
+        super.flush();
+        MergerTask.setIsFlush(true);
     }
 
     @Override
@@ -24,6 +36,7 @@ public class MergerBunch extends Bunch<Segment>{
         MergerTask mergerTask = new MergerTask();
         mergerTask.setSegments(itemList);
         mergerTask.setBunchSegment(bunchSegment);
+        MergerTask.addCount();
         ScheduleCenter.INSTANCE.addTask(mergerTask);
     }
 

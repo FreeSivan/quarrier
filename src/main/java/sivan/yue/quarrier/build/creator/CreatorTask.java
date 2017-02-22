@@ -21,6 +21,10 @@ public class CreatorTask extends BuildTask {
 
     private List<Document> docList = new ArrayList<>();
 
+    private static boolean isFlush;
+
+    private static int count = 0;
+
     @Override
     public void run() {
         Segment segment = new Segment();
@@ -32,6 +36,11 @@ public class CreatorTask extends BuildTask {
         }
         // 将任务添加到调度中心
         mergerBunch.addItem(segment);
+        delCount();
+        if (isIsFlush() && getCount()==0) {
+            mergerBunch.flush();
+            setIsFlush(false);
+        }
     }
 
     /**
@@ -80,8 +89,8 @@ public class CreatorTask extends BuildTask {
             }
             // 创建倒排索引结构
             Segment.IndexMeta indexMeta = new Segment.IndexMeta();
-            // 保存key值在文档中的偏移量
-            indexMeta.offset = i;  // TODO  思考
+            // 保存key值在文档中的byte偏移量
+            indexMeta.offset = i;
             // 保存文档的id
             indexMeta.docId = doc.docId;
             // 将key值及对应的倒排项加入临时倒排表
@@ -152,5 +161,30 @@ public class CreatorTask extends BuildTask {
 
     public void setMergerBunch(MergerBunch mergerBunch) {
         this.mergerBunch = mergerBunch;
+    }
+
+
+    public synchronized static void addCount() {
+        count++;
+    }
+
+    public synchronized static void delCount() {
+        count--;
+    }
+
+    public synchronized static int getCount() {
+        return count;
+    }
+
+    public synchronized static void setCount(int count) {
+        CreatorTask.count = count;
+    }
+
+    public synchronized static boolean isIsFlush() {
+        return isFlush;
+    }
+
+    public synchronized static void setIsFlush(boolean isFlush) {
+        CreatorTask.isFlush = isFlush;
     }
 }
