@@ -5,6 +5,9 @@ import sivan.yue.quarrier.common.exception.AccessOutBoundException;
 import java.util.Vector;
 
 /**
+ * description : byte数组的容器，用于存放原始数据文件。
+ *
+ * 每次分配16M的byte数组大小，填充满之后继续申请
  *
  * Created by xiwen.yxw on 2017/2/17.
  */
@@ -14,8 +17,14 @@ public class ByteVector {
      */
     private static final int ARRAY_LENGTH = 0x1000000;
 
+    /**
+     * 存放数据的vector，不设置最大长度
+     */
     private Vector<byte[]> data = new Vector<>();
 
+    /**
+     * 当前数据长度
+     */
     private int currentLen;
 
     public ByteVector() {
@@ -23,6 +32,13 @@ public class ByteVector {
         data.clear();
     }
 
+    /**
+     * description ：添加数据函数
+     *
+     * 向容器中添加一个字节
+     *
+     * @param val 待添加的数据
+     */
     public void addByte(byte val) {
         if (currentLen % ARRAY_LENGTH == 0) {
             byte[] newBunch = new byte[ARRAY_LENGTH];
@@ -35,6 +51,14 @@ public class ByteVector {
         currentLen ++;
     }
 
+    /**
+     * description ：获取数据函数
+     *
+     * 从容器中指定位置获取数据，越界则抛出异常
+     *
+     * @param index 指定的位置
+     * @return 获取的数据
+     */
     public byte getByte(int index) {
         if (index >= currentLen) {
             throw new AccessOutBoundException("out of array size");
@@ -44,6 +68,13 @@ public class ByteVector {
         return data.get(bunchIndex)[bunchOffset];
     }
 
+    /**
+     * description ：添加数据函数
+     *
+     * 向容器中添加一组数据
+     *
+     * @param val 添加的字节序列
+     */
     public void addBytes(byte[] val) {
         int length = val.length;
         int i = 0;
@@ -61,9 +92,19 @@ public class ByteVector {
         }
     }
 
+    /**
+     *
+     * description ：获取数据函数
+     *
+     * 从指定位置获取指定长度的数据，越界抛异常
+     *
+     * @param offset 指定获取数据的位置
+     * @param length 指定获取数据的长度
+     * @return 获取的数据
+     */
     public byte[] getBytes(int offset, int length) {
         if (offset + length > currentLen) {
-            return null;
+            throw new AccessOutBoundException("out of array size");
         }
         byte[] result = new byte[length];
         int i = offset;
@@ -78,6 +119,10 @@ public class ByteVector {
         return result;
     }
 
+    /**
+     * description ： 获取当前长度
+     * @return 容器当前持有的字节数
+     */
     public int getCurrentLen() {
         return this.currentLen;
     }

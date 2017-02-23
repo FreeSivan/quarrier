@@ -2,32 +2,34 @@ package sivan.yue.quarrier.common.tools;
 
 import sivan.yue.quarrier.common.exception.FileFormatErrorException;
 
-import java.io.Closeable;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * description : 对类加锁的多线程互斥访问文件类
  *
- * 由于是对类加锁，所以即使是打开的不同文件，
- * 对不同文件的读写也会互相阻塞工作线程
- * 这个类只用于打开segment文件，不打开其他文件
+ * 根据文件名获取全局锁，该锁在多线程中可见。
+ * 锁必须再FileLockTool中配置。
+ *
  * Created by xiwen.yxw on 2017/2/16.
  */
 public class ThreadMutexFile implements Closeable {
 
     private RandomAccessFile realFile = null;
 
+    private String fileName;
+
     public ThreadMutexFile(String name, String mode) throws FileNotFoundException{
-        realFile = new RandomAccessFile(name, mode);
+        File file = new File(name);
+        realFile = new RandomAccessFile(file, mode);
+        fileName = file.getName();
+        System.out.println("fileName = " + fileName);
     }
 
     public Integer readInt() {
         Integer value = null;
-        synchronized (ThreadMutexFile.class) {
+        synchronized (FileLockTool.lockMap.get(fileName)) {
             try {
                 if (realFile.length() < 4) {
                     return null;
@@ -42,7 +44,7 @@ public class ThreadMutexFile implements Closeable {
 
     public List<Integer> readIntList() {
         List<Integer> lst= new ArrayList<Integer>();
-        synchronized (ThreadMutexFile.class) {
+        synchronized (FileLockTool.lockMap.get(fileName)) {
             try {
                 long length = realFile.length();
                 if (length % 4 != 0) {
@@ -62,7 +64,7 @@ public class ThreadMutexFile implements Closeable {
     }
 
     public void writeInt(int value) {
-        synchronized (ThreadMutexFile.class) {
+        synchronized (FileLockTool.lockMap.get(fileName)) {
             try {
                 realFile.seek(realFile.length());
                 realFile.writeInt(value);
@@ -73,7 +75,7 @@ public class ThreadMutexFile implements Closeable {
     }
 
     public void writeIntList(List<Integer> lst) {
-        synchronized (ThreadMutexFile.class) {
+        synchronized (FileLockTool.lockMap.get(fileName)) {
             try {
                 realFile.seek(realFile.length());
                 for (Integer value : lst) {
