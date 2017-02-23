@@ -54,4 +54,8 @@ public abstract class Search<T> implements ISearch<T> {
     public synchronized void addSubIndex(T subIndex) {
         segList.add(subIndex);
     }
+
+    public List<T> getSegList() {
+        return this.segList;
+    }
 }
