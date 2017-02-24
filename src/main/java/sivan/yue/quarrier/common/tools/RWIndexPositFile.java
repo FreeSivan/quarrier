@@ -1,7 +1,9 @@
 package sivan.yue.quarrier.common.tools;
 
 import sivan.yue.quarrier.common.data.Segment;
+import sivan.yue.quarrier.common.exception.FileAccessErrorException;
 import sivan.yue.quarrier.common.exception.FileFormatErrorException;
+import sivan.yue.quarrier.common.exception.FileNotFindException;
 
 import java.io.*;
 import java.util.Map;
@@ -42,9 +44,9 @@ public class RWIndexPositFile {
             }
             out.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new FileNotFindException("index file not find!");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileAccessErrorException("index file write error!");
         }
     }
 
@@ -77,9 +79,9 @@ public class RWIndexPositFile {
             }
             realFile.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new FileNotFindException("index file not find!");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileAccessErrorException("index file load error!");
         }
     }
 
@@ -102,9 +104,9 @@ public class RWIndexPositFile {
             }
             out.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new FileNotFindException("index Value file not find!");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileAccessErrorException("index value file write error!");
         }
     }
 
@@ -135,16 +137,16 @@ public class RWIndexPositFile {
             }
             realFile.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new FileNotFindException("index Value file not find!");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileAccessErrorException("index value file load error!");
         }
     }
 
     /**
      * description : 写正排索引到磁盘文件中
      *
-     * 将segment对象中的indexData对象写入iValueName指定的文件中
+     * 将segment对象中的posit对象写入positName指定的文件中
      * 写入顺序：key（四字节）docId（4字节）offset（4字节）orgId（4字节）
      * 每个正排索引占用12个字节的大小
      *
@@ -165,9 +167,9 @@ public class RWIndexPositFile {
             }
             out.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new FileNotFindException("posit file not find!");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileAccessErrorException("posit file write error!");
         }
     }
 
@@ -201,41 +203,60 @@ public class RWIndexPositFile {
             }
             realFile.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new FileNotFindException("posit file not find!");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileAccessErrorException("posit file load error!");
         }
     }
 
     /**
+     * description : 写正排文件到磁盘中
      *
-     * @param pValueName
-     * @param segment
+     * 将segment对象中的positData对象写入pValueName指定的文件中
+     * positData以byte为单位，每个doc的原始内容依次写入正排文件中
+     *
+     * @param pValueName 正排文件名
+     * @param segment 保存原始文件数据的segment
      */
     public static void writePValueName(String pValueName, Segment segment) {
         Vector<Byte> positData = segment.positData;
         try {
             DataOutputStream out=new DataOutputStream(new FileOutputStream(pValueName));
             byte[] bytes = new byte[positData.size()];
-            // TODO 这地方太low了
             for (int i = 0; i < positData.size(); ++i) {
                 bytes[i] = positData.get(i);
             }
             out.write(bytes, 0, bytes.length);
             out.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new FileNotFindException("posit Value file not find!");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileAccessErrorException("posit value file write error!");
         }
     }
 
     /**
+     * description : 读正排文件到内存中
      *
-     * @param pValueName
-     * @param segment
+     * 将pValueName指定的正排文件中的内容读到segment对象的positData中
+     *
+     * @param pValueName 正排文件的文件名
+     * @param segment 保存正排文件原始数据的segment结构
      */
     public static void loadPValueName(String pValueName, Segment segment) {
         Vector<Byte> positData = segment.positData;
+        try {
+            RandomAccessFile realFile = new RandomAccessFile(pValueName, "r");
+            long length = realFile.length();
+            byte[] bytes = new byte[(int) length];
+            realFile.read(bytes);
+            for (byte val : bytes) {
+                positData.add(val);
+            }
+        } catch (FileNotFoundException e) {
+            throw new FileNotFindException("posit Value file not find!");
+        } catch (IOException e) {
+            throw new FileAccessErrorException("posit value file load error!");
+        }
     }
 }
