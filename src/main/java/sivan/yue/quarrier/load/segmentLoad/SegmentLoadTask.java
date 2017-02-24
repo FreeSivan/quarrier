@@ -34,6 +34,7 @@ public class SegmentLoadTask extends LoadTask {
         String pValueName = path + index + ".pv";
         RWIndexPositFile.loadPValueName(pValueName, segment);
         service.addSubIndex(segment);
+
     }
 
 }
