@@ -19,8 +19,11 @@ public class SegmentSearchTool {
     }
 
     private static byte countBitOne(int i) {
-        // TODO
-        return 0;
+        byte n = 0;
+        for (n = 0; i > 0; n++) {
+            i &=(i - 1);
+        }
+        return n;
     }
 
     /**

@@ -29,7 +29,7 @@ public class ThreadMutexFile implements Closeable {
 
     public Integer readInt() {
         Integer value = null;
-        synchronized (FileLockTool.lockMap.get(fileName)) {
+        synchronized (FileLockContainer.lockMap.get(fileName)) {
             try {
                 if (realFile.length() < 4) {
                     return null;
@@ -44,7 +44,7 @@ public class ThreadMutexFile implements Closeable {
 
     public List<Integer> readIntList() {
         List<Integer> lst= new ArrayList<Integer>();
-        synchronized (FileLockTool.lockMap.get(fileName)) {
+        synchronized (FileLockContainer.lockMap.get(fileName)) {
             try {
                 long length = realFile.length();
                 if (length % 4 != 0) {
@@ -64,7 +64,7 @@ public class ThreadMutexFile implements Closeable {
     }
 
     public void writeInt(int value) {
-        synchronized (FileLockTool.lockMap.get(fileName)) {
+        synchronized (FileLockContainer.lockMap.get(fileName)) {
             try {
                 realFile.seek(realFile.length());
                 realFile.writeInt(value);
@@ -75,7 +75,7 @@ public class ThreadMutexFile implements Closeable {
     }
 
     public void writeIntList(List<Integer> lst) {
-        synchronized (FileLockTool.lockMap.get(fileName)) {
+        synchronized (FileLockContainer.lockMap.get(fileName)) {
             try {
                 realFile.seek(realFile.length());
                 for (Integer value : lst) {

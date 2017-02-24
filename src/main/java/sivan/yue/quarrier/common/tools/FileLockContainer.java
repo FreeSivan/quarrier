@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by xiwen.yxw on 2017/2/23.
  */
-public class FileLockTool {
+public class FileLockContainer {
 
     public static Map<String, Class<?>> lockMap = new HashMap<>();
 
