@@ -94,6 +94,9 @@ public class CreatorTask extends BuildTask {
                 indexMeta.offset = i;
                 // 保存文档的id
                 indexMeta.docId = doc.docId;
+                //if (value == 0) {
+                //    System.out.println("docid1111 = " + doc.orgId + " offset1111 = " + indexMeta.offset);
+                //}
                 // 将key值及对应的倒排项加入临时倒排表
                 if (tmpMap.containsKey(value)) {
                     tmpMap.get(value).add(indexMeta);
@@ -105,6 +108,11 @@ public class CreatorTask extends BuildTask {
                 // 我也不知道下面的代码是要干嘛,指纹提取的同学要求索引这个key
                 if (i + 32 * 4 < data.length) {
                     int value2 = getKey2(data, value, i + 32 * 4);
+                    //if (value2 == 0) {
+                    //    int v1 = value;
+                    //    int v2 = getKey(data, i+32*4);
+                    //    System.out.println("docid = " + doc.orgId + " offset = " + indexMeta.offset + " v1 = "+v1 + " offset2 = " + (i+32*4) + " v2" + v2);
+                    //}
                     if (tmpMap.containsKey(value2)) {
                         tmpMap.get(value2).add(indexMeta);
                     } else {
@@ -148,7 +156,7 @@ public class CreatorTask extends BuildTask {
                 ((data[offset + 1] & 0xFF) << 8) |
                 ((data[offset + 2] & 0xFF) << 16)|
                 ((data[offset + 3] & 0xFF) << 24));
-        return  (key >> 1) & 0x7FFF8000 + (value>>1) & 0x7F;
+        return  ((value >> 1) & 0x7FFF8000) | ((key) & 0x7FFF);
     }
 
     public List<Document> getDocList() {

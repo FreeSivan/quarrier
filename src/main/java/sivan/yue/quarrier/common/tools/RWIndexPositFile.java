@@ -116,13 +116,13 @@ public class RWIndexPositFile {
      * 将磁盘中存储的倒排文件加载到内存中segment对象的indexData结构中
      * 读文件顺序：docId（4字节）offset（4字节），该文件的大小必须是8整数倍
      *
-     * @param indexVFileName
-     * @param segment
+     * @param iValueName 倒排文件的文件名
+     * @param segment 存放倒排项的segment结构
      */
-    public static void loadIValueFile(String indexVFileName, Segment segment) {
+    public static void loadIValueFile(String iValueName, Segment segment) {
         Vector<Segment.IndexMeta> indexData = segment.indexData;
         try {
-            RandomAccessFile realFile = new RandomAccessFile(indexVFileName, "r");
+            RandomAccessFile realFile = new RandomAccessFile(iValueName, "r");
             long length = realFile.length();
             if ((length % 8) != 0) {
                 throw new FileFormatErrorException("IValue File Format Error!");
