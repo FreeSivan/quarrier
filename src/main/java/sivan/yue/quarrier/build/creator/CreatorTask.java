@@ -94,9 +94,6 @@ public class CreatorTask extends BuildTask {
                 indexMeta.offset = i;
                 // 保存文档的id
                 indexMeta.docId = doc.docId;
-                //if (value == 0) {
-                //    System.out.println("docid1111 = " + doc.orgId + " offset1111 = " + indexMeta.offset);
-                //}
                 // 将key值及对应的倒排项加入临时倒排表
                 if (tmpMap.containsKey(value)) {
                     tmpMap.get(value).add(indexMeta);
@@ -108,11 +105,6 @@ public class CreatorTask extends BuildTask {
                 // 我也不知道下面的代码是要干嘛,指纹提取的同学要求索引这个key
                 if (i + 32 * 4 < data.length) {
                     int value2 = getKey2(data, value, i + 32 * 4);
-                    //if (value2 == 0) {
-                    //    int v1 = value;
-                    //    int v2 = getKey(data, i+32*4);
-                    //    System.out.println("docid = " + doc.orgId + " offset = " + indexMeta.offset + " v1 = "+v1 + " offset2 = " + (i+32*4) + " v2" + v2);
-                    //}
                     if (tmpMap.containsKey(value2)) {
                         tmpMap.get(value2).add(indexMeta);
                     } else {
@@ -128,6 +120,9 @@ public class CreatorTask extends BuildTask {
             // key值及key值对应的倒排项
             Integer key = entry.getKey();
             List<Segment.IndexMeta> docIdList = entry.getValue();
+            if (docIdList.size() > docIdList.size() * 5) {
+                continue;
+            }
             // 创建新的倒排索引，持有key值及倒排项的位置信息
             Segment.Index index = new Segment.Index();
             index.offset = segment.indexData.size();
