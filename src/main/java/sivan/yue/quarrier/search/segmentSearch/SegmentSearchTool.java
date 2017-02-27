@@ -6,6 +6,8 @@ import sivan.yue.quarrier.common.exception.FileFormatErrorException;
 import java.util.List;
 
 /**
+ * description : segment检索工具类，检索一个segment的公共代码
+ *
  * Created by xiwen.yxw on 2017/2/17.
  */
 public class SegmentSearchTool {
@@ -27,7 +29,7 @@ public class SegmentSearchTool {
     }
 
     /**
-     * description: 从一个segment中检索rawData的操作
+     * description : 从一个segment中检索rawData的操作
      *
      * @param segment 待检索的segment
      * @param rawData 待检索的rawData
@@ -38,24 +40,27 @@ public class SegmentSearchTool {
             throw new FileFormatErrorException("rawData format error!");
         }
         for (int i = 0; i < rawData.length; i+=4) {
+            // 获取key值，4个byte对应一个key
             int key = getKeyFromRawData(rawData, i);
+            // 通过key值获取倒排索引
             Segment.Index index = segment.indexRun.get(key);
+            // 迭代key值对应的倒排表中的每个倒排项目
             for (int j = index.offset; j < index.offset+index.length; ++j) {
+                // 取出倒排项目
                 Segment.IndexMeta indexMeta = segment.indexData.get(j);
-                int fileOffset = indexMeta.offset;
-                int docId = indexMeta.docId;
-                Segment.Posit posit = segment.posit.get(docId);
-                int orgId = posit.orgId;
-                int rawOffset = posit.offset;
-                int rawLength = posit.length;
-                int begin = rawOffset + fileOffset - i;
-                int end = rawOffset + fileOffset - i + rawData.length;
-                if (end > rawOffset + rawLength) {
+                // 获取倒排项对应的正排索引
+                Segment.Posit posit = segment.posit.get(indexMeta.docId);
+                // 计算原始二进制流在raw文件中的起始位置
+                int begin = posit.offset + indexMeta.offset - i;
+                // 计算原始二进制流在raw文件中的结束位置
+                int end = posit.offset + indexMeta.offset - i + rawData.length;
+                // 如果二进制流对应的结束位置大于文件再raw文件中的结束位置
+                if (end > posit.offset + posit.length) {
                     continue;
                 }
-                List<Byte> content = segment.positData.subList(begin, end);
-                if (contentMatch(rawData, content)) {
-                    return orgId;
+                // 如果匹配成功则返回文档原始的id
+                if (contentMatch(rawData, segment.positData, begin)) {
+                    return posit.orgId;
                 }
             }
             return -1;
@@ -64,21 +69,21 @@ public class SegmentSearchTool {
     }
 
     /**
-     * description：判断元是二进制和指纹库中检索出来的指纹段是否相似
+     * description :判断元是二进制和指纹库中检索出来的指纹段是否相似
      *
      * @param rawData 原始二进制串
      * @param content 指纹库中检索出来的数据段
+     * @param begin content中的起始位置
      * @return true ： 相似； false ：不相似
      */
-    private static boolean contentMatch(byte[] rawData, List<Byte> content) {
+    private static boolean contentMatch(byte[] rawData, List<Byte> content, int begin) {
         if (rawData.length != content.size()) {
             return false;
         }
-        Byte[] cont = content.toArray(new Byte[content.size()]);
         int count = 0;
         for (int i = 0; i < rawData.length; i += 2) {
             int key1 = getMetaKeyFromBuffer(rawData, i);
-            int key2 = getMetaKeyFromBuffer(cont, i);
+            int key2 = getMetaKeyFromBuffer(content, begin + i);
             count += table[key1 ^ key2];
         }
         if (count < rawData.length * 8 * 0.37) {
@@ -87,14 +92,18 @@ public class SegmentSearchTool {
         return false;
     }
 
+    /**
+     * description : 从rawData的offset位置获取一个索引key值
+     *
+     * @param rawData 待检索的二进制流
+     * @param offset 二进制流的偏移地址
+     * @return 待检索的key值
+     */
     private static int getKeyFromRawData(byte[] rawData, int offset) {
         int value = (int) ((rawData[offset] & 0xFF) |
                 ((rawData[offset + 1] & 0xFF) << 8) |
                 ((rawData[offset + 2] & 0xFF) << 16)|
                 ((rawData[offset + 3] & 0xFF) << 24));
-        if ((value & 1) == 0) {
-            return 0;
-        }
         return (value >> 1) & 0x7FFFFFFF;
     }
 
@@ -103,8 +112,8 @@ public class SegmentSearchTool {
         return value;
     }
 
-    private static int getMetaKeyFromBuffer(Byte[] buffer, int offset) {
-        int value = (buffer[offset] & 0xFF)|((buffer[offset+1] & 0xFF) << 8);
+    private static int getMetaKeyFromBuffer(List<Byte> buffer, int offset) {
+        int value = (buffer.get(offset) & 0xFF)|((buffer.get(offset+1) & 0xFF) << 8);
         return value;
     }
 }

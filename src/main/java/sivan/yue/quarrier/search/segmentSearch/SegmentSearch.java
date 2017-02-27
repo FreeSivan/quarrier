@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 /**
+ * description : 检索子索引类型为segment的搜索类
+ *
  * Created by xiwen.yxw on 2017/2/15.
  */
 public class SegmentSearch extends Search<Segment> {

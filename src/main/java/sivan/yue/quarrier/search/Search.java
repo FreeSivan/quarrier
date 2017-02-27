@@ -1,5 +1,6 @@
 package sivan.yue.quarrier.search;
 
+import sivan.yue.quarrier.common.exception.BlockQueueException;
 import sivan.yue.quarrier.common.schedule.ScheduleCenter;
 
 import java.util.ArrayList;
@@ -19,14 +20,18 @@ public abstract class Search<T> implements ISearch<T> {
 
     @Override
     public int multiSearch(byte[] rawData) {
+        // 结果队列，工作线程将执行结果放入这个阻塞队列中
         BlockingQueue<Integer> bq = new LinkedBlockingQueue<>();
         List<SearchTask> searchTasks = new ArrayList<>();
         int count = 0;
+        // 为每个子索引创建一个任务，放入任务调度中心
         for (T seg : segList) {
             SearchTask task = createTask(seg, bq, rawData);
             searchTasks.add(task);
             ScheduleCenter.INSTANCE.addTask(task);
         }
+        // 从结果队列中取出所有的结果，判断结果并返回
+        // 当有一个工作线程返回正确结果后，设置其他线程的停止位
         while(true) {
             if (count >= segList.size()) {
                 break;
@@ -42,7 +47,7 @@ public abstract class Search<T> implements ISearch<T> {
                 count++;
             } catch (InterruptedException e) {
                 count++;
-                e.printStackTrace();
+                throw new BlockQueueException("multiSearch Exception!");
             }
         }
         return -1;
