@@ -44,6 +44,9 @@ public class SegmentSearchTool {
             int key = getKeyFromRawData(rawData, i);
             // 通过key值获取倒排索引
             Segment.Index index = segment.indexRun.get(key);
+            if (index == null) {
+                continue;
+            }
             // 迭代key值对应的倒排表中的每个倒排项目
             for (int j = index.offset; j < index.offset+index.length; ++j) {
                 // 取出倒排项目
@@ -77,9 +80,6 @@ public class SegmentSearchTool {
      * @return true ： 相似； false ：不相似
      */
     private static boolean contentMatch(byte[] rawData, List<Byte> content, int begin) {
-        if (rawData.length != content.size()) {
-            return false;
-        }
         int count = 0;
         for (int i = 0; i < rawData.length; i += 2) {
             int key1 = getMetaKeyFromBuffer(rawData, i);

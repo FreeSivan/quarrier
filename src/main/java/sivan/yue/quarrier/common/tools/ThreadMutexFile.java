@@ -24,7 +24,6 @@ public class ThreadMutexFile implements Closeable {
         File file = new File(name);
         realFile = new RandomAccessFile(file, mode);
         fileName = file.getName();
-        System.out.println("fileName = " + fileName);
     }
 
     public Integer readInt() {
