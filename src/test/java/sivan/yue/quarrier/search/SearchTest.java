@@ -26,7 +26,7 @@ public class SearchTest {
 
         System.out.println("load success!");
         try {
-            RandomAccessFile realFile = new RandomAccessFile("D:\\work\\data\\afp\\afp\\3425242.afp", "r");
+            RandomAccessFile realFile = new RandomAccessFile("D:\\work\\data\\afp\\2000000001.afp", "r");
             for (int i = 0; i < realFile.length() - 768; i += 768) {
                 byte[] content = new byte[768];
                 realFile.seek(i);
@@ -34,6 +34,27 @@ public class SearchTest {
                 int ret = segmentSearch.multiSearch(content);
                 System.out.println("ret = " + ret);
             }
+            realFile.close();
+            System.out.println("===========================================");
+            RandomAccessFile realFile1 = new RandomAccessFile("D:\\work\\data\\afp\\1027712.afp", "r");
+            for (int i = 0; i < realFile1.length() - 768; i += 768) {
+                byte[] content = new byte[768];
+                realFile1.seek(i);
+                realFile1.read(content, 0, 768);
+                int ret = segmentSearch.multiSearch(content);
+                System.out.println("ret = " + ret);
+            }
+            realFile1.close();
+            System.out.println("===========================================");
+            RandomAccessFile realFile2 = new RandomAccessFile("D:\\work\\data\\afp\\3598439.afp", "r");
+            for (int i = 0; i < realFile2.length() - 768; i += 768) {
+                byte[] content = new byte[768];
+                realFile2.seek(i);
+                realFile2.read(content, 0, 768);
+                int ret = segmentSearch.multiSearch(content);
+                System.out.println("ret = " + ret);
+            }
+            realFile2.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

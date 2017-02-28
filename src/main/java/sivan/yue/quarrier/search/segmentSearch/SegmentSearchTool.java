@@ -41,6 +41,7 @@ public class SegmentSearchTool {
             throw new FileFormatErrorException("rawData format error!");
         }
         List<KeyMeta> keyList = new ArrayList<>();
+        long startTime = System.currentTimeMillis();
         for (int i = 0; i < rawData.length; i+=4) {
             // 获取key值，4个byte对应一个key
             int key = getKeyFromRawData(rawData, i);
@@ -51,42 +52,85 @@ public class SegmentSearchTool {
                 return ret;
             }
         }
-        List<KeyMeta> keyList1 = getFaultTolerant1(keyList);
+        long end = System.currentTimeMillis();
+        System.out.println("time1 = " + (end - startTime));
+        List<Integer> pow = new ArrayList<>();
+        for (int i = 0; i < 31; ++i) {
+            pow.add(1 << i);
+        }
+        List<KeyMeta> keyList1 = getFaultTolerant1(keyList, pow);
         for (KeyMeta keyMeta : keyList1) {
             int ret = searchSingleKey(segment, keyMeta.key, rawData, keyMeta.offset);
             if (ret != -1) {
                 return ret;
             }
         }
-        keyList1 = getFaultTolerant2(keyList);
+        long end1 = System.currentTimeMillis();
+        System.out.println("time2 = " + (end1 - startTime) + " size = " + keyList1.size());
+        keyList1 = getFaultTolerant2(keyList, pow);
+        long end21 = System.currentTimeMillis();
+        System.out.println("time2.5 = " + (end21 - startTime) + " size = " + keyList1.size());
         for (KeyMeta keyMeta : keyList1) {
             int ret = searchSingleKey(segment, keyMeta.key, rawData, keyMeta.offset);
             if (ret != -1) {
                 return ret;
             }
         }
-        keyList1 = getFaultTolerant3(keyList);
+        long end2 = System.currentTimeMillis();
+        System.out.println("time3 = " + (end2 - startTime) + " size = " + keyList1.size());
+        keyList1 = getFaultTolerant3(keyList, pow);
+        long end31 = System.currentTimeMillis();
+        System.out.println("time3.5 = " + (end31 - startTime) + " size = " + keyList1.size());
         for (KeyMeta keyMeta : keyList1) {
             int ret = searchSingleKey(segment, keyMeta.key, rawData, keyMeta.offset);
             if (ret != -1) {
                 return ret;
             }
         }
+        long end3 = System.currentTimeMillis();
+        System.out.println("time4 = " + (end3 - startTime) + " size = " + keyList1.size());
         return -1;
     }
 
-    private static List<KeyMeta> getFaultTolerant3(List<KeyMeta> keyList) {
+    private static List<KeyMeta> getFaultTolerant1(List<KeyMeta> keyList, List<Integer> pow) {
         List<KeyMeta> metaLst = new ArrayList<>();
+        for (KeyMeta keyMeta : keyList) {
+            for (int i = pow.size()-1; i >= 0; --i) {
+                int key = keyMeta.key ^ pow.get(i);
+                KeyMeta keyMeta1 = new KeyMeta(key, keyMeta.offset);
+                metaLst.add(keyMeta1);
+            }
+        }
         return metaLst;
     }
 
-    private static List<KeyMeta> getFaultTolerant2(List<KeyMeta> keyList) {
+    private static List<KeyMeta> getFaultTolerant2(List<KeyMeta> keyList, List<Integer> pow) {
         List<KeyMeta> metaLst = new ArrayList<>();
+        for (KeyMeta keyMeta : keyList) {
+            for (int i = pow.size()-1; i >= 0; --i) {
+                for (int j = i - 1; j >= 0; --j) {
+                    int key = keyMeta.key ^ pow.get(i) ^ pow.get(j);
+                    KeyMeta keyMeta1 = new KeyMeta(key, keyMeta.offset);
+                    metaLst.add(keyMeta1);
+                }
+            }
+        }
         return metaLst;
     }
 
-    private static List<KeyMeta> getFaultTolerant1(List<KeyMeta> keyList) {
+    private static List<KeyMeta> getFaultTolerant3(List<KeyMeta> keyList, List<Integer> pow) {
         List<KeyMeta> metaLst = new ArrayList<>();
+        for (KeyMeta keyMeta : keyList) {
+            for (int i = pow.size()-1; i >= 0; --i) {
+                for (int j = i - 1; j >= 0; --j) {
+                    for (int k = j - 1; k >= 0; --k) {
+                        int key = keyMeta.key ^ pow.get(i) ^ pow.get(j) ^ pow.get(k);
+                        KeyMeta keyMeta1 = new KeyMeta(key, keyMeta.offset);
+                        metaLst.add(keyMeta1);
+                    }
+                }
+            }
+        }
         return metaLst;
     }
 
@@ -104,7 +148,7 @@ public class SegmentSearchTool {
             // 计算原始二进制流在raw文件中的起始位置
             int begin = posit.offset + indexMeta.offset - offset;
             // 计算原始二进制流在raw文件中的结束位置
-            int end = posit.offset + indexMeta.offset - offset + rawData.length;
+            int end = begin + rawData.length;
             // 如果二进制流对应的结束位置大于文件再raw文件中的结束位置
             if (end > posit.offset + posit.length) {
                 continue;
